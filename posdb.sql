@@ -304,7 +304,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `role`, `first_name`, `last_name`, `username`, `password`, `email`, `phone`, `image`, `address`, `updated_at`, `created_at`, `deleted`) VALUES
-(2, 2, 'Adebowale', 'Adebusuyi', 'kato', '$006167903439f90827e775ac34830019.$d559ad23ea4304cd1da6f6fcdd472ba6', 'heclassy@gmail.com', '08065348422', NULL, 'Idi Agba Titun Akure', '2020-10-02 22:32:51', '2020-09-28 11:28:46', 0),
+(2, 2, 'Admin', 'Owner', 'hoop', '$006167903439f90827e775ac34830019.$d559ad23ea4304cd1da6f6fcdd472ba6', 'heclassy@gmail.com', '08065348422', NULL, 'Idi Agba Titun Akure', '2020-10-02 22:32:51', '2020-09-28 11:28:46', 0),
 (3, 1, 'Moyinoluwa', 'King Walex', 'walex', '$b0b6605a8686ef830c048e0cb9365209.$62c8ad0a15d9d1ca38d5dee762a16e01', 'wale@gmail.com', '', NULL, '', '2020-10-03 16:23:38', '2020-09-29 09:21:04', 0),
 (4, 0, 'Janetilia', 'Akpore', 'janet', '$b0b6605a8686ef830c048e0cb9365209.$62c8ad0a15d9d1ca38d5dee762a16e01', 'janet247890@gmail.com', '08125256517', NULL, '', '2020-11-07 12:02:55', '2020-09-29 09:22:45', 0),
 (6, 0, 'Bolarinwa', 'Bokorinlo', 'student1', '$b0b6605a8686ef830c048e0cb9365209.$62c8ad0a15d9d1ca38d5dee762a16e01', 'amadebusuyi@gmail.com', '1234567890', NULL, '', '2020-11-05 07:47:22', '2020-10-02 05:06:18', 0),
