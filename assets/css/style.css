@@ -1,0 +1,94 @@
+.dataTables_length select{
+	height: 30px;
+	border-radius: 5px;
+	border: 1px solid grey;
+}
+
+.dataTables_filter{
+	margin-top: -35px;
+}
+
+.dataTables_filter input{
+	height: 30px;
+	border: 1px solid grey;
+	border-radius: 5px;
+}
+
+@media(max-width: 768px){
+	.dataTables_filter{
+		width: 100%;
+		justify-content: center;
+		margin-top: 5px;
+	}
+}
+
+.dataTables_filter input:focus{
+	padding: 6px;
+	border: none;
+}
+
+.dataTables_paginate{
+	margin-top: -15px !important;
+	height: 60px;
+}
+
+.dataTables_paginate a{
+	border: 1px solid grey;
+	border-left: none;
+	padding: 10px;
+	cursor: pointer;
+}
+
+.dataTables_paginate span a, .dataTables_paginate span .ellipsis{
+	border: 1px solid grey;
+	border-left: none;
+	padding: 10px;
+}
+
+.dataTables_paginate span .current{
+	background: var(--light);
+	cursor: not-allowed;
+}
+
+.dataTables_paginate .previous{
+	border-left: 1px solid grey !important;
+	border-bottom-left-radius: 5px;
+	border-top-left-radius: 5px;
+}
+
+.dataTables_paginate .next{	
+	border-bottom-right-radius: 5px;
+	border-top-right-radius: 5px;
+}
+
+.dataTables_paginate .previous, .dataTables_paginate .next{
+	background: var(--default);
+	color: var(--lighter);
+}
+
+.dataTables_paginate .previous:focus, .dataTables_paginate .next:focus{
+	background: var(--lighter);
+	color: var(--dark);
+}
+
+.dataTables_paginate .disabled{
+	cursor: not-allowed;
+	background: var(--light) !important;
+	color: var(--lighter) !important;
+}
+
+.bg-t-selected{
+	background: #dfdfdf;
+}
+
+.cart-t-row{
+	scrollbar-width: thin !important;
+	overflow: auto; 
+	max-height: 59vh
+}
+
+@media(min-width: 575px){
+	.total-amount{
+		text-align: right !important;
+	}
+}

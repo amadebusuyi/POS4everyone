@@ -1,0 +1,210 @@
+<div class="modal fade" id="addStaffModal" tabindex="-1" role="dialog" aria-labelledby="add-staff-modal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="add-staff-modal">+ Add Staff</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="add-staff-form">
+              <div class="modal-body">
+                  <div class="container-fluid" style="width: 115%; margin-left: -7.5%">
+                      <div class="row">
+                         <div class="col-lg-6" data-form>
+                            <input type="text" id="first-name" class="form-control" data-form-label="First name" data-form-float data-form-required="You must provide the first name">
+                        </div>
+                        <div class="col-lg-6" data-form>
+                            <input type="text" id="last-name" class="form-control" data-form-float data-form-label="Last Name">
+                        </div>                        
+                      </div>
+                      <div class="row">
+                         <div class="col-lg-6" data-form>
+                            <input type="text" id="username" class="form-control" data-form-label="Username" data-form-float data-form-required>
+                        </div>
+                        <div class="col-lg-6" data-form>
+                            <input type="password" id="password" class="form-control" data-form-float data-form-label="Password" data-form-required>
+                        </div>                        
+                      </div>
+                      <div class="row">
+                        <div class="col-lg-6" data-form>
+                            <input type="email" id="email" class="form-control" data-form-label="Email" data-form-float>
+                        </div>
+                        <div class="col-lg-6" data-form>
+                            <input type="text" id="phone" class="form-control" data-form-float data-form-label="Phone">
+                        </div>                        
+                      </div>
+                      <div class="row">
+                        <div class="col-lg-6" data-form>
+                            <select id="role" class="form-control" data-form-float data-form-label="User role" data-form-required>
+                              <option value="" disabled selected>Select staff role</option>
+                              <option value="0">Staff</option>
+                              <option value="1">Admin Staff</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-6" data-form>
+                            <input type="file" id="image" class="form-control" data-form-float data-form-label="Upload Image">
+                        </div>                        
+                      </div>
+                      <div class="row">
+                        <div class="col-lg-12" data-form>
+                            <textarea id="address" class="form-control" data-form-float data-form-label="Address"></textarea>
+                        </div>                        
+                      </div>
+                  </div>
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-default">Add staff</button>
+              </div>
+           </form>
+        </div>
+    </div>
+</div>
+
+
+    <div class="container-fluid mt-5">
+      <div class="row">
+        <div class="col-6 text-left">  
+          <button data-target="#addStaffModal" data-toggle="modal" class="btn btn-default">+ Add<span class="d-none d-sm-inline"> Staff</span></button>
+        </div>
+        <div class="col-6 text-right" id="showDeleteBtn">
+        </div>
+      </div>
+      <div class="row mt-4" id="display-staff">
+        <script type="text/template" id="template-staff">
+          {{#if staff}}
+            <div class="table-responsive">
+              <!-- Projects table -->
+              <table class="table align-items-center table-flush" id="staff-table">
+                <thead class="thead-light">
+                  <tr>
+                    <th data-type="no-sort"><input type="checkbox" id="select-all"></th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Username</th>
+                    <th data-type="no-sort" scope="col">Email</th>
+                    <th data-type="no-sort" scope="col">Phone</th>
+                    <th data-type="no-sort" scope="col">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {{#each staff}}
+                  <tr id="user-{{id}}">
+                    <td>
+                      <input type="checkbox" id="select-{{id}}">
+                    </td>
+                    <td>
+                      {{first_name}} {{last_name}}
+                    </td>
+                    <td>
+                      {{username}}
+                    </td>
+                    <td>
+                      {{email}}
+                    </td>
+                    <td>
+                      {{phone}}
+                    </td>
+                    <td>
+                      <button class="btn btn-default btn-sm" data-user="{{username}}" data-action="viewUser">
+                        <i class="fa fa-eye"></i>
+                      </button>
+                    </td>
+                  </tr>
+                  {{/each}}
+                </tbody>
+              </table>
+            </div>
+            {{/if}}
+            <script type="text/javascript">
+                  $("#staff-table").dataTable();
+
+                  $("th").show(function(){
+                    if($(this).data("type") == "no-sort"){
+                      let html = $(this).html();
+                      $(this).replaceWith(`<th>${html}</th>`);
+                    }
+                  })
+
+                  $("#select-all").click(function(){
+                    if($(this).prop("checked") == true){
+                      $("[type='checkbox']").each(function(){
+                        $(this).prop("checked", true);
+                      })
+                    }
+                    else{
+                      $("[type='checkbox']").each(function(){
+                        $(this).prop("checked", false);
+                      })
+                    }
+                  })
+
+                  $("[type='checkbox']").each(function(){
+                    $(this).click(function(){
+                      if($(this).prop("checked") == false){
+                        $("#select-all").prop("checked", false);
+                      }
+                    })
+                    
+                  })
+
+                  $("[type='checkbox']").click(function(){
+                    let status = 0;
+                    let count = 0;
+                    let ids = [];
+                    $("[type='checkbox']").each(function(){
+                      if($(this).prop("checked") == true && $(this).prop("id") !== "select-all"){
+                        status = 1;
+                        count = count+1;
+                        ids.push($(this).prop("id").split("select-")[1]);
+                        $(this).parent("td").parent("tr").addClass("bg-light");
+                      }
+                      else{
+                        $(this).parent("td").parent("tr").removeClass("bg-light");
+                      }
+                      let check = $("#showDeleteBtn").find("button").html();
+                      if(status === 1){
+                          $("#showDeleteBtn").html(`<button style="margin-left: 50px" class='btn btn-warning' onclick="deleteList('${ids}')"><i class='fa fa-trash'></i> <span class="d-none d-sm-inline">Delete Selected</span> (${count})</button>`);
+                      }
+                      
+                      else{
+                        if(check)
+                          $("#showDeleteBtn").find("button").remove();
+                      }
+                    })
+                  })
+
+                  function deleteList(ids = []){
+                    swal.fire({
+                      title: "Are you sure?",
+                      text: "Please confirm that you want to delete selected users from database",
+                      type: "warning",
+                      showCancelButton: true,
+                      confirmButtonColor: "#DD6B55",
+                      confirmButtonText: "Yes, delete!",
+                    }).then ((result) => {
+                      console.log(result);
+                      if(result.value){
+                        $.post("process/users.php", {delete_user: ids}, (data)=>{
+                          data = JSON.parse(data);
+                          if(data.status === "success"){
+                            localStorage.prompt = JSON.stringify({title: "Updated!", message: data.message, type: "success"});
+                            location.reload();
+                          }
+                          else{
+                            swal("Error occured!", data.message, "warning");
+                          }
+                        })
+                      }
+                    })
+                  }
+                        
+                  $("[data-action='viewUser']").click(function(e){
+                    e.preventDefault();
+                    let user = $(this).data("user");
+                    window.location = "./profile#/"+user;
+                  });
+
+            </script>
+          </script>
+          </div>

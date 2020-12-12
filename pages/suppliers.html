@@ -1,0 +1,215 @@
+<div class="modal fade" id="addSupplierModal" tabindex="-1" role="dialog" aria-labelledby="add-category-modal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="add-category-modal">+ Add Supplier</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="add-supplier-form">
+              <div class="modal-body">
+                  <div class="container-fluid" style="width: 115%; margin-left: -7.5%">
+                      <div class="row">
+                         <div class="col-12" data-form>
+                            <input type="text" id="sup-name" class="form-control" data-form-label="Supplier Name" data-form-float data-form-required="Supplier name cannot be empty">
+                        </div>
+                        <div class="col-12" data-form>
+                            <textarea id="sup-contact" class="form-control" data-form-float data-form-label="Contact Information" data-form-placeholder="Enter supplier contact information"></textarea>
+                        </div> 
+                        <div class="col-12" data-form>
+                            <textarea id="sup-desc" class="form-control" data-form-float data-form-label="Description" data-form-placeholder="Describe this category"></textarea>
+                        </div>                        
+                      </div>
+                  </div>
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-default">Add Supplier</button>
+              </div>
+           </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="updateSupplierModal" tabindex="-1" role="dialog" aria-labelledby="add-category-modal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="update-supplier-modal">Update Supplier</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="update-supplier-form">
+              <div class="modal-body">
+                  <div class="container-fluid" style="width: 115%; margin-left: -7.5%">
+                      <div class="row">
+                         <div class="col-12" data-form>
+                            <input type="text" id="supname" class="form-control" data-form-label="Supplier Name" data-form-float data-form-required="Supplier name cannot be empty">
+                        </div>
+                        <div class="col-12" data-form>
+                            <textarea id="supcontact" class="form-control" data-form-float data-form-label="Contact Information" data-form-placeholder="Enter supplier contact information"></textarea>
+                        </div> 
+                        <div class="col-12" data-form>
+                            <textarea id="supdesc" class="form-control" data-form-float data-form-label="Description" data-form-placeholder="Describe this category"></textarea>
+                        </div>                        
+                      </div>
+                  </div>
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-default update-sup" data-id="">Update Supplier</button>
+              </div>
+           </form>
+        </div>
+    </div>
+</div>
+
+
+    <div class="container-fluid mt-5">
+      <div class="row">
+        <div class="col-6 text-left">  
+          <button data-target="#addSupplierModal" data-toggle="modal" class="btn btn-default">+ Add<span class="d-none d-sm-inline"> Supplier</span></button>
+        </div>
+        <div class="col-6 text-right" id="showDeleteBtn">
+          &nbsp;
+        </div>
+      </div>
+      <div class="row mt-4" id="display-suppliers">
+        <script type="text/template" id="template-suppliers">
+          {{#if suppliers}}
+            <div class="table-responsive">
+              <!-- Projects table -->
+              <table class="table align-items-center table-flush" id="suppliers-table">
+                <thead class="thead-light">
+                  <tr>
+                    <th data-type="no-sort"><input type="checkbox" id="select-all"></th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Created By</th>
+                    <th scope="col">No of products</th>
+                    <th data-type="no-sort" scope="col">Contact</th>
+                    <th data-type="no-sort" scope="col">Description</th>
+                    <th data-type="no-sort" scope="col">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {{#each suppliers}}
+                  <tr>
+                    <td>
+                      <input type="checkbox" id="select-{{id}}">
+                    </td>
+                    <td class="sup-name">{{name}}</td>
+                    <td>{{created_by}}</td>
+                    <td class="text-center">{{products_count}}</td>
+                    <td class="sup-contact">{{contact}}</td>
+                    <td class="sup-description">{{description}}</td>
+                    <td>
+                      <button class="btn btn-default btn-sm" data-id="{{id}}" data-action="updateSup">
+                        <i class="fa fa-edit"></i>
+                      </button>
+                    </td>
+                  </tr>
+                  {{/each}}
+                </tbody>
+              </table>
+            </div>
+            {{/if}}
+            <script type="text/javascript">
+              $("#suppliers-table").show(function(){
+                $(this).dataTable();
+              });
+
+              $("th").show(function(){
+                if($(this).data("type") == "no-sort"){
+                  let html = $(this).html();
+                  $(this).replaceWith(`<th>${html}</th>`);
+                }
+              })
+
+              $("#select-all").click(function(){
+                if($(this).prop("checked") == true){
+                  $("[type='checkbox']").each(function(){
+                    $(this).prop("checked", true);
+                  })
+                }
+                else{
+                  $("[type='checkbox']").each(function(){
+                    $(this).prop("checked", false);
+                  })
+                }
+              })
+
+              $("[type='checkbox']").each(function(){
+                $(this).click(function(){
+                  if($(this).prop("checked") == false){
+                    $("#select-all").prop("checked", false);
+                  }
+                })
+              })
+
+              $("[type='checkbox']").click(function(){
+                let status = 0;
+                let count = 0;
+                let ids = [];
+                $("[type='checkbox']").each(function(){
+                  if($(this).prop("checked") == true && $(this).prop("id") !== "select-all"){
+                    status = 1;
+                    count = count+1;
+                    ids.push($(this).prop("id").split("select-")[1]);
+                    $(this).parent("td").parent("tr").addClass("bg-light");
+                  }
+                  else{
+                    $(this).parent("td").parent("tr").removeClass("bg-light");
+                  }
+                  let check = $("#showDeleteBtn").find("button").html();
+                  if(status === 1){
+                      $("#showDeleteBtn").html(`<button style="margin-left: 50px" class='btn btn-warning' onclick="deleteList('${ids}')"><i class='fa fa-trash'></i> <span class="d-none d-sm-inline">Delete Selected</span> (${count})</button>`);
+                  }
+                  
+                  else{
+                    if(check)
+                      $("#showDeleteBtn").find("button").remove();
+                  }
+                })
+              })
+
+              function deleteList(ids = []){
+                swal.fire({
+                  title: "Are you sure?",
+                  text: "Please confirm that you want to delete selected suppliers from database",
+                  type: "warning",
+                  showCancelButton: true,
+                  confirmButtonColor: "#DD6B55",
+                  confirmButtonText: "Yes, delete!",
+                }).then ((result) => {
+                  if(result.value){
+                    $.post("process/commodities.php", {multi_del_sup: ids}, (data)=>{
+                      data = JSON.parse(data);
+                      if(data.status === "success"){
+                        localStorage.prompt = JSON.stringify({title: "Done!", message: data.message, type: "success"});
+                        location.reload();
+                      }
+                      else{
+                        swal("Error occured!", data.message, "warning");
+                      }
+                    })
+                  }
+                })
+              }
+                    
+              $("[data-action='updateSup']").click(function(e){
+                e.preventDefault();
+                let supid = $(this).data("id");
+                $("#supname").val($(this).parent("td").parent("tr").find(".sup-name").html());
+                $("#supcontact").val($(this).parent("td").parent("tr").find(".sup-contact").html());
+                $("#supdesc").val($(this).parent("td").parent("tr").find(".sup-description").html());
+
+                $(".update-sup").data("id", supid);
+
+                $("#updateSupplierModal").modal("show");
+              });
+
+            </script>
+          </script>
+          </div>

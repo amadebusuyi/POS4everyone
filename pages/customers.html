@@ -1,0 +1,227 @@
+<div class="modal fade" id="addCustomerModal" tabindex="-1" role="dialog" aria-labelledby="add-customer-modal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cart-modal">New Customer Information</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="add-customer-form" data-page="true">
+              <div class="modal-body">
+                  <div class="container-fluid">
+                      <div class="row">
+                        <div class="col-12" data-form>
+                          <input type="text" id="customer-name" class="form-control" data-form-label="Customer's Name" data-form-float data-form-required="Provide customer's name">
+                        </div>
+                        <div class="col-12" data-form>
+                          <input type="text" id="customer-phone" class="form-control" data-form-label="Customer's Phone" data-form-num data-form-float>
+                        </div>
+                        <div class="col-12" data-form>
+                          <input type="email" id="customer-email" class="form-control" data-form-label="Customer's Email" data-form-float>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-12" data-form>
+                            <textarea id="customer-address" class="form-control" data-form-float data-form-label="Customer's Address"></textarea>
+                        </div>
+                      </div>        
+                  </div>
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-default update-pro" data-id="">Add Customer</button>
+              </div>
+           </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="updateCustomerModal" tabindex="-1" role="dialog" aria-labelledby="add-category-modal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="update-category-modal">Update Customer</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="update-customer-form">
+              <div class="modal-body">
+                  <div class="container-fluid" style="width: 115%; margin-left: -7.5%">
+                    
+                      <div class="row">
+                        <div class="col-12" data-form>
+                          <input type="text" id="update-customer-name" class="form-control" data-form-label="Customer's Name" data-form-float data-form-required="Provide customer's name">
+                        </div>
+                        <div class="col-12" data-form>
+                          <input type="text" id="update-customer-phone" class="form-control" data-form-label="Customer's Phone" data-form-num data-form-float>
+                        </div>
+                        <div class="col-12" data-form>
+                          <input type="email" id="update-customer-email" class="form-control" data-form-label="Customer's Email" data-form-float>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-12" data-form>
+                            <textarea id="update-customer-address" class="form-control" data-form-float data-form-label="Customer's Address"></textarea>
+                        </div>
+                      </div> 
+
+                  </div>
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-default update-customer" data-id="">Update Category</button>
+              </div>
+           </form>
+        </div>
+    </div>
+</div>
+
+
+    <div class="container-fluid mt-5">
+      <div class="row">
+        <div class="col-6 text-left">  
+          <button data-target="#addCustomerModal" data-toggle="modal" class="btn btn-default">+ Add<span class="d-none d-sm-inline"> Customer</span></button>
+        </div>
+        <div class="col-6 text-right" id="showDeleteBtn">
+          &nbsp;
+        </div>
+      </div>
+      <div class="row mt-4" id="display-customers-main">
+        <script type="text/template" id="template-customers">
+          {{#if customers}}
+            <div class="table-responsive">
+              <!-- Projects table -->
+              <table class="table align-items-center table-flush" id="customers-table">
+                <thead class="thead-light">
+                  <tr>
+                    <th data-type="no-sort"><input type="checkbox" id="select-all"></th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Phone</th>
+                    <th scope="col">Email</th>
+                    <th data-type="no-sort" scope="col">Address</th>
+                    <th data-type="no-sort" scope="col">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {{#each customers}}
+                  <tr id="cat-{{id}}">
+                    <td>
+                      <input type="checkbox" id="select-{{id}}">
+                    </td>
+                    <td class="customer-name">{{name}}</td>
+                    <td class="customer-phone">{{phone}}</td>
+                    <td class="customer-email">{{email}}</td>
+                    <td class="customer-address">{{address}}</td>
+                    <td>
+                      <button class="btn btn-dark btn-sm" data-id="{{id}}" data-action="updateCustomer">
+                        <i class="fa fa-edit"></i>
+                      </button>
+                    </td>
+                  </tr>
+                  {{/each}}
+                </tbody>
+              </table>
+            </div>
+            {{/if}}
+            <script type="text/javascript">
+              $("#customers-table").show(function(){
+                $(this).dataTable();
+              });
+
+              $("th").show(function(){
+                if($(this).data("type") == "no-sort"){
+                  let html = $(this).html();
+                  $(this).replaceWith(`<th>${html}</th>`);
+                }
+              })
+
+              $("#select-all").click(function(){
+                if($(this).prop("checked") == true){
+                  $("[type='checkbox']").each(function(){
+                    $(this).prop("checked", true);
+                  })
+                }
+                else{
+                  $("[type='checkbox']").each(function(){
+                    $(this).prop("checked", false);
+                  })
+                }
+              })
+
+              $("[type='checkbox']").each(function(){
+                $(this).click(function(){
+                  if($(this).prop("checked") == false){
+                    $("#select-all").prop("checked", false);
+                  }
+                })
+              })
+
+              $("[type='checkbox']").click(function(){
+                let status = 0;
+                let count = 0;
+                let ids = [];
+                $("[type='checkbox']").each(function(){
+                  if($(this).prop("checked") == true && $(this).prop("id") !== "select-all"){
+                    status = 1;
+                    count = count+1;
+                    ids.push($(this).prop("id").split("select-")[1]);
+                    $(this).parent("td").parent("tr").addClass("bg-light");
+                  }
+                  else{
+                    $(this).parent("td").parent("tr").removeClass("bg-light");
+                  }
+                  let check = $("#showDeleteBtn").find("button").html();
+                  if(status === 1){
+                      $("#showDeleteBtn").html(`<button style="margin-left: 50px" class='btn btn-warning' onclick="deleteList('${ids}')"><i class='fa fa-trash'></i> <span class="d-none d-sm-inline">Delete Selected</span> (${count})</button>`);
+                  }
+                  
+                  else{
+                    if(check)
+                      $("#showDeleteBtn").find("button").remove();
+                  }
+                })
+              })
+
+              function deleteList(ids = []){
+                swal.fire({
+                  title: "Are you sure?",
+                  text: "Please confirm that you want to delete selected customers from database",
+                  type: "warning",
+                  showCancelButton: true,
+                  confirmButtonColor: "#DD6B55",
+                  confirmButtonText: "Yes, delete!",
+                }).then ((result) => {
+                  if(result.value){
+                    $.post("process/sales.php", {multiple_deletion: ids}, (data)=>{
+                      data = JSON.parse(data);
+                      if(data.status === "success"){
+                        localStorage.prompt = JSON.stringify({title: "Done!", message: data.message, type: "success"});
+                        location.reload();
+                      }
+                      else{
+                        swal("Error occured!", data.message, "warning");
+                      }
+                    })
+                  }
+                })
+              }
+                    
+              $("[data-action='updateCustomer']").click(function(e){
+                e.preventDefault();
+                let id = $(this).data("id");
+                let update = "#update-customer-";
+                $(update+"name").val($(this).parent("td").parent("tr").find(".customer-name").html());
+                $(update+"phone").val($(this).parent("td").parent("tr").find(".customer-phone").html());
+                $(update+"email").val($(this).parent("td").parent("tr").find(".customer-email").html());
+                $(update+"address").val($(this).parent("td").parent("tr").find(".customer-address").html());
+
+                $(".update-customer").data("id", id);
+
+                $("#updateCustomerModal").modal("show");
+              });
+
+            </script>
+          </script>
+          </div>
