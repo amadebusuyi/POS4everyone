@@ -30,3 +30,7 @@ POS4everyone was developed with PHP core version 7+. Other technologies include 
 * Show daily, weekly, monthly and yearly sales statistics
 * Show total number of sales and growth in sales
 * Show total sale amount and profits
+
+#### Future plan
+* Backup data online
+* Multiple Stores
