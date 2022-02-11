@@ -1,89 +1,8 @@
-<div class="modal fade" id="addProductModal" tabindex="-1" role="dialog" aria-labelledby="add-product-modal" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="add-product-modal">+ Add Product</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form id="add-product-form">
-              <div class="modal-body">
-                  <div class="container-fluid" style="width: 115%; margin-left: -7.5%">
-                      <div class="row">
-                         <div class="col-sm-6" data-form>
-                            <select id="pro-cat" class="form-control" data-form-float data-form-required="Category must be selected" data-form-label="Select category">
-                              <option value="" selected disabled>Select category</option>
-                              <?php 
-                                include "process/conn.php";
-                                $conn = $pdo->open();
-
-                                $query = $conn->prepare("SELECT id, name from categories where deleted = 0");
-                                $query->execute();
-
-                                while ($row = $query->fetch()) {
-                                  echo "<option value='".$row['id']."'>".$row['name']."</option>";
-                                }
-
-                               ?>
-                            </select>
-                          </div>
-                         <div class="col-sm-6" data-form>
-                            <select id="pro-sup" class="form-control" data-form-float data-form-required="Supplier must be selected" data-form-label="Select Supplier">
-                              <option value="" selected disabled>Select Supplier</option>
-                              <?php 
-
-                                $query = $conn->prepare("SELECT id, name from suppliers where deleted = 0");
-                                $query->execute();
-
-                                while ($row = $query->fetch()) {
-                                  echo "<option value='".$row['id']."'>".$row['name']."</option>";
-                                }
-
-                                $pdo->close();
-                               ?>
-                            </select>
-                          </div>
-                        </div>
-                      <div class="row">
-                        <div class="col-sm-6" data-form>
-                          <input type="text" id="pro-name" class="form-control" data-form-label="Product Name (generic)" data-form-float data-form-required="Product name cannot be empty">
-                        </div>
-                        <div class="col-sm-6" data-form>
-                          <input type="text" id="pro-tname" class="form-control" data-form-label="Product Name (Therapeutic)" data-form-float>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="col-sm-6" data-form>
-                          <input type="text" id="pro-bname" class="form-control" data-form-label="Brand Name" data-form-float>
-                        </div>
-                        <div class="col-sm-6" data-form>
-                          <input type="text" id="pro-qty" class="form-control" data-form-label="Quantity" data-form-num data-form-float data-form-required="Quantity cannot be empty">
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="col-sm-6" data-form>
-                          <input type="text" id="pro-cost" class="form-control" data-form-label="Unit Cost Price" data-form-float data-form-currency>
-                        </div>
-                        <div class="col-sm-6" data-form>
-                          <input type="text" id="pro-sell" class="form-control" data-form-label="Unit Selling Price" data-form-currency data-form-float data-form-required="You must add a selling price">
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="col-12" data-form>
-                            <textarea id="pro-desc" class="form-control" data-form-float data-form-label="Description" data-form-placeholder="Describe this product"></textarea>
-                        </div>                        
-                      </div>
-                  </div>
-              </div>
-              <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                  <button type="submit" class="btn btn-default">Add Product</button>
-              </div>
-           </form>
-        </div>
-    </div>
-</div>
+<?php 
+  include "process/conn.php";
+  $conn = $pdo->open();
+ ?>
+                            
 
 <div class="modal fade" id="updateProductModal" tabindex="-1" role="dialog" aria-labelledby="add-product-modal" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -168,13 +87,179 @@
            </form>
         </div>
     </div>
+</div>  
+
+ <!-- UPDATE STOCK IN DATABASE  -->
+
+<div class="modal fade" id="updateStockModal" tabindex="-1" role="dialog" aria-labelledby="update-stock-modal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="update-stock-modal">Update Stock</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="update-stock-form">
+              <div class="modal-body">
+                <h4 style="margin-top: -30px" class="mb-4 text-center">Item: <span id="stockname"></span> <span id="stocktname"></span></h4>
+                  <div class="container-fluid" style="width: 115%; margin-left: -7.5%">
+                    <div class="row">
+                      <div class="col-12">
+                        <div class="row mb-3">
+                          <div class="col-6">
+                            <input type="radio" name="stock-type" id="add-to" checked value="1"> <label for="add-to">Add to stock</label>
+                          </div>
+                          <div class="col-6">
+                            <input type="radio" name="stock-type" value="0" id="rem-from"> <label for="rem-from">Remove from stock</label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                     <div class="row">
+                       <div class="col-sm-6" data-form>
+                          <select id="stock-sup" class="form-control" data-form-float data-form-label="Select Supplier">
+                            <option value="" selected disabled>Select Supplier</option>
+                            <?php 
+
+                              $query = $conn->prepare("SELECT id, name from suppliers where deleted = 0");
+                              $query->execute();
+
+                              while ($row = $query->fetch()) {
+                                echo "<option value='".$row['id']."'>".$row['name']."</option>";
+                              }
+
+                              $pdo->close();
+                             ?>
+                          </select>
+                        </div>
+
+                        <div class="col-sm-6" data-form>
+                          <input type="text" id="stock-qty" class="form-control" data-form-label="Quantity" data-form-num data-form-float data-form-required="Quantity cannot be empty">
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-12" data-form>
+                            <textarea id="stock-desc" class="form-control" data-form-float data-form-label="Description" data-form-placeholder="Describe this product"></textarea>
+                        </div>
+                      </div>        
+                  </div>
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-default update-stock" data-id="">Update stock</button>
+              </div>
+           </form>
+        </div>
+    </div>
 </div>
+
+
+
+<!-- NEW ADD COMMODITIES FULL SCREEN OVERLAY WITH SUPPORT FOR MULTIPLE ENTRIES STARTS HERE-->
+
+<div id="addItems" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255,255,255, 1); z-index: 1047; height: 100%; display: none">
+  <h1 style="position: relative; top: 10px; left: 10px">Add Items</h1>
+  <span class="close-overlay-modal" style="position: absolute; top: 10px; right: 10px; cursor: pointer"><i class="fa fa-times fa-2x"></i></span>
+
+  <div class="container-fluid">
+    <div class="row mt-4">
+      <div class="col-6 col-sm-3">
+         <button class="btn btn-dark add-category">+ Add Category</span></button>
+      </div>
+      <div class="col-6 col-sm-3">
+         <button class="btn btn-primary add-supplier">+ Add Supplier</span></button>
+      </div>
+    </div>
+
+    <div class="row mt-3 p-2 add-t-row" style="">
+      <table class="table table-striped table-bordered table-responsive" width="100%" style="margin-top: 30px; overflow-x: hidden">
+        <thead>
+          <tr>
+            <th>Item Name (generic)</th>
+            <th>Other Name (specific)</th>
+            <th>Category</th>
+            <th>Supplier</th>
+            <th>Quantity</th>
+            <th>Unit Cost Price</th>
+            <th>Unit Selling price</th>
+            <th>Profit (%)</th>
+            <th>Description</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody class="add-item-tbody">
+          
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="col-12 pr-4 pt-2">
+    <button class="btn btn-danger float-right addItemRow">+ New Item</button>
+  </div>
+
+  <div class="cart-footer alert-primary" style="position: absolute; bottom: 0; left: 0; right: 0; height: 60px;">
+    <div class="container">
+      <div class="row m-2">
+        <div class="col-12 text-center">
+          <button class="btn btn-success" id="completeAddProducts">Save Items</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NEW ADD COMMODITIES FULL SCREEN OVERLAY WITH SUPPORT FOR MULTIPLE ENTRIES ENDS HERE -->
+
+
+<!-- NEW UPDATE STOCK FULL SCREEN OVERLAY WITH SUPPORT FOR MULTIPLE ITEMS STARTS HERE-->
+
+<div id="updateStockItems" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255,255,255, 1); z-index: 1047; height: 100%;">
+  <h1 style="position: relative; top: 10px; left: 10px">Update Stock</h1>
+  <span class="close-overlay-modal" style="position: absolute; top: 10px; right: 10px; cursor: pointer"><i class="fa fa-times fa-2x"></i></span>
+
+  <div class="container-fluid">
+
+    <div class="row mt-3 p-2 add-t-row" style="">
+      <table class="table table-striped table-bordered table-responsive" width="100%" style="margin-top: 30px; overflow-x: hidden">
+        <thead>
+          <tr>
+            <th width="20%">Item Name (generic)</th>
+            <th width="20%">Other Name (specific)</th>
+            <th width="20%">Supplier</th>
+            <th width="20%">Quantity (+ve)</th>
+            <th width="20%">Quantity (-ve)</th>
+            <th width="20%">Description</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody class="update-stock-tbody">
+          
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="cart-footer alert-primary" style="position: absolute; bottom: 0; left: 0; right: 0; height: 60px;">
+    <div class="container">
+      <div class="row m-2">
+        <div class="col-12 text-center">
+          <button class="btn btn-success" id="completeAddProducts">Update Stock</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NEW UPDATE STOCK FULL SCREEN OVERLAY WITH SUPPORT FOR MULTIPLE ENTRIES ENDS HERE -->
 
 
     <div class="container-fluid mt-5">
       <div class="row">
         <div class="col-6 text-left">  
-          <button data-target="#addProductModal" data-toggle="modal" class="btn btn-default">+ Add<span class="d-none d-sm-inline"> product</span></button>
+          <button data-target="#addProductModal" data-toggle="modal" class="btn btn-default add-items">+ Add<span class="d-none d-sm-inline"> Items</span></button>
         </div>
         <div class="col-6 text-right" id="showDeleteBtn">
           &nbsp;
@@ -190,13 +275,12 @@
                   <tr>
                     <th data-type="no-sort"><input type="checkbox" id="select-all"></th>
                     <th scope="col" class="sorting_asc" tabindex="0" aria-controls="products-table" rowspan="1" colspan="1" aria-sort="ascending">Name</th>
-                    <th scope="col">Therapeutic name</th>
-                    <th scope="col">Brand name</th>
+                    <th scope="col">Other names</th>                    
                     <th scope="col">Quantity</th>
-                    <th scope="col">Category</th>
-                    <th scope="col">Supplier</th>
                     <th scope="col">Unit cost price</th>
                     <th scope="col">Unit sell price</th>
+                    <th scope="col">Category</th>
+                    <th scope="col" class="d-none">Supplier</th>
                     <th data-type="no-sort" scope="col">Action</th>
                   </tr>
                 </thead>
@@ -208,12 +292,11 @@
                     </td>
                     <td class="gname">{{generic_name}}</td>
                     <td class="tname">{{therapeutic}}</td>
-                    <td class="bname">{{brand_name}}</td>
                     <td class="text-center qty">{{quantity}}</td>
-                    <td class="cat">{{category}}</td>
-                    <td class="sup">{{supplier}}</td>
                     <td class="cost">₦{{unit_cost_price}}</td>
                     <td class="sell">₦{{unit_selling_price}}</td>
+                    <td class="cat">{{category}}</td>
+                    <td class="sup d-none">{{supplier}}</td>
                     <!--<td class="profit">{{js "loadProfit(this.unit_selling_price, this.unit_cost_price)"}}</td>-->
                     <td>
                       <!-- <button class="btn btn-default btn-sm" data-id="{{id}}" data-action="viewPro">
@@ -221,6 +304,9 @@
                       </button> -->
                       <button class="btn btn-dark btn-sm" data-id="{{id}}" data-action="updatePro">
                         <i class="fa fa-edit"></i>
+                      </button>
+                      <button class="btn btn-primary btn-sm" data-id="{{id}}" data-action="updateStock">
+                        <i class="fa fa-plus"></i>
                       </button>
                     </td>
                   </tr>
@@ -266,11 +352,13 @@
                 let status = 0;
                 let count = 0;
                 let ids = [];
+                let checkIds = [];
                 $("[type='checkbox']").each(function(){
                   if($(this).prop("checked") == true && $(this).prop("id") !== "select-all"){
                     status = 1;
                     count = count+1;
                     ids.push($(this).prop("id").split("select-")[1].split("-")[1]);
+                    checkIds.push($(this).prop("id"));
                     $(this).parent("td").parent("tr").addClass("bg-light");
                   }
                   else{
@@ -278,7 +366,19 @@
                   }
                   let check = $("#showDeleteBtn").find("button").html();
                   if(status === 1){
-                      $("#showDeleteBtn").html(`<button style="margin-left: 50px" class='btn btn-warning' onclick="deleteList('${ids}')"><i class='fa fa-trash'></i> <span class="d-none d-sm-inline">Delete Selected</span> (${count})</button>`);
+                      $("#showDeleteBtn").html(`
+                        <button style="margin-left: 50px" class='btn btn-link' onclick="deleteList('${ids}')">
+                          <i class='fa fa-trash'></i> 
+                          <span class="d-none d-sm-inline">Delete Selected</span> 
+                          (${count})
+                        </button>
+                        <button class="btn btn-link" onclick="updateStock('${checkIds}')">
+                          <i class='fa fa-plus'></i> 
+                          <span class="d-none d-sm-inline">Update Selected</span> 
+                          (${count})
+                        </button>
+
+                        `);
                   }
                   
                   else{
@@ -287,6 +387,11 @@
                   }
                 })
               })
+
+               // UPDATE MULTIPLE STOCKS
+                // function updateStock(ids){
+                //   console.log(ids);
+                // }
 
               function deleteList(ids = []){
                 swal.fire({
@@ -338,6 +443,50 @@
 
                 $("#updateProductModal").modal("show");
               });
+                    
+              $("[data-action='updateStock']").click(function(e){
+                e.preventDefault();
+               let stockid = $(this).data("id");
+                $("#stockname").text($(this).parent("td").parent("tr").find(".gname").html());
+                $("#stocktname").text($(this).parent("td").parent("tr").find(".tname").html());
+                let sup = $(this).parent("td").parent("tr").find(".sup").html();
+                $("#stock-sup").find("option").each(function(){
+                  if($(this).html() == sup){
+                    $(this).prop("selected", true);
+                  }
+                })
+
+                $("#stock-cost").val($(this).parent("td").parent("tr").find(".cost").html());
+                $("#stock-sell").val($(this).parent("td").parent("tr").find(".sell").html());
+
+                $(".update-stock").data("id", stockid);
+
+                $("#updateStockModal").modal("show");
+              });
+
+               $(".add-customer").click(()=>{
+                $("#cartModal").modal("show");
+              })
+
+              $(".close-overlay-modal").click(function(){
+                $(this).parent("div").fadeOut();
+              });
+
+
+              // Function to remove add item table row
+              var removeItemRow = (id) => {
+                    $("[data-item-id='"+id+"']").remove();
+                 $.each(trIDs, (i, item) => {
+                  if(item.id === id){
+                    trIDs.splice(i, 1);
+                    console.log(trIDs);
+                  }
+                }) 
+              };
+
+              $(".add-items").click(function(){
+                $("#addItems").show();
+              })
 
             </script>
           </script>

@@ -261,7 +261,7 @@ if(isset($_GET['add_product'])){
 	$conn = $pdo->open();
 
 	try{
-		$query = $conn->prepare("INSERT into commodities (generic_name, therapeutic, brand_name, category, supplier, quantity, description, unit_cost_price, unit_selling_price) values (:generic_name, :therapeutic, :brand_name, :category, :supplier, :quantity, :description, :unit_cost_price, :unit_selling_price)");
+		$query = $conn->prepare("INSERT into commodities (generic_name, therapeutic, brand_name, category, supplier, quantity, description, unit_cost_price, unit_selling_price, created_by) values (:generic_name, :therapeutic, :brand_name, :category, :supplier, :quantity, :description, :unit_cost_price, :unit_selling_price, :created_by)");
 		$query->execute([
 			"generic_name" => stripper($_GET["pro_name"]),
 			"therapeutic" => stripper($_GET["pro_tname"]),
@@ -271,7 +271,8 @@ if(isset($_GET['add_product'])){
 			"quantity" => $_GET["pro_qty"],
 			"description" => stripper($_GET["pro_desc"]),
 			"unit_cost_price" => $_GET["pro_cost"],
-			"unit_selling_price" => $_GET["pro_sell"]
+			"unit_selling_price" => $_GET["pro_sell"],
+			"created_by" => $_GET["add_product"]
 		]);
 
 		echo json_encode([
@@ -286,6 +287,67 @@ if(isset($_GET['add_product'])){
 			"message" => "An error prevented the addition of product to database. \n".$e
 		]);
 	}
+}
+// BEGINNING OF PRODUCTS ------------>
+if(isset($_GET['add_multi_product'])){
+	$conn = $pdo->open();
+	$created_by = $_GET["add_multi_product"];
+	$data = $_GET["data"];
+	$data = json_decode($data);
+	// echo $data;
+	// return;
+	$success = 0;
+	$failed = 0;
+	$errors = array();
+	for ($i=0; $i < count($data); $i++) {
+	$item = $data[$i];
+		try{
+			$query = $conn->prepare("INSERT into commodities (generic_name, therapeutic, category, supplier, quantity, description, unit_cost_price, unit_selling_price, created_by) values (:generic_name, :therapeutic, :category, :supplier, :quantity, :description, :unit_cost_price, :unit_selling_price, :created_by)");
+			$query->execute([
+				"generic_name" => stripper($item->generic_name),
+				"therapeutic" => stripper($item->specific_name),
+				"category" => $item->category,
+				"supplier" => $item->supplier,
+				"quantity" => $item->qty,
+				"description" => stripper($item->description),
+				"unit_cost_price" => explode("₦", $item->unit_cost_price)[1],
+				"unit_selling_price" => explode("₦", $item->unit_selling_price)[1],
+				"created_by" => $created_by
+			]);
+
+			$success++;
+
+		}
+
+		catch(PDOException $e){
+			$failed++;
+			array_push($errors, $e);
+		}	
+	}
+
+	if($failed > 0 && $success == 0){
+		echo json_encode([
+			"status" => "failed",
+			"message" => "An error prevented the addition of items to database.",
+			"errors" => $errors
+		]);
+	}
+
+	elseif($failed > 0 && $success > 0){
+		echo json_encode([
+			"status" => "failed",
+			"message" => "Oops! Some of the items were not added to the database"
+		]);
+	}
+
+	elseif($success > 0){
+		echo json_encode([
+			"status" => "success",
+			"message" => "Items were added to database."
+		]);
+	}
+
+	
 }
 
 if(isset($_GET['update_product'])){
@@ -330,16 +392,21 @@ if(isset($_POST['fetch_products'])){
 	$feedback = array();
 
 	while($rows = $query->fetch()){
+		if($rows["supplier"]){
+			$query_sname = $conn->prepare("SELECT name from suppliers where id = :id");
+			$query_sname->execute(["id"=>$rows["supplier"]]);
+			$rows['supplier'] = $query_sname->fetch()['name'];
+		}
+		else
+			$rows['supplier'] = "";
 
-		$query_sname = $conn->prepare("SELECT name from suppliers where id = :id");
-		$query_sname->execute(["id"=>$rows["supplier"]]);
-
-		$rows['supplier'] = $query_sname->fetch()['name'];
-
-		$query_cname = $conn->prepare("SELECT name from categories where id = :id");
-		$query_cname->execute(["id"=>$rows["category"]]);
-
-		$rows['category'] = $query_cname->fetch()['name'];
+		if($rows['category']){
+			$query_cname = $conn->prepare("SELECT name from categories where id = :id");
+			$query_cname->execute(["id"=>$rows["category"]]);
+			$rows['category'] = $query_cname->fetch()['name'];	
+		}
+		else
+			$rows['category'] = "";	
 
 		$feed = loadFeed($rows, ["updated_at", "deleted", "image", "note", "unit"]);
 
