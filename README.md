@@ -10,6 +10,10 @@ POS4everyone was developed with PHP core version 7+. Other technologies include 
 * Admin staff - Can create a sales staff; add, modify and delete items in store and more
 * Sales staff - Can only sell items and view personal sold item history.
 
+#### Passwords:
+* Admin: key3yj
+* User: You can update password from the admin panel but typically 1234qwer
+
 #### A point of sale
 * Add the cost price and selling price of items in store
 * Easily search through items at the point of sale

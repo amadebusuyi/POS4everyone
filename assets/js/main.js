@@ -269,6 +269,133 @@
 
     // Adding of commodities starts here >>
 
+    let addItemRow = (trId) => {
+      return `
+        <tr data-item-id="${trId}">
+          <td>
+            <input type="text" class="form-control" style="text-align: center" data-form-items data-name="generic_name" placeholder="Item name (generic)">
+          </td>
+          <td>
+            <input type="text" class="form-control" style="text-align: center" data-form-items data-name="specific_name" placeholder="Item name (specific)">
+          </td>
+          <td>
+            <select type="text" class="form-control" style="text-align: center" data-form-items data-name="category">
+              <option selected value="">Select Category</option>
+              <option>Category 1</option>
+              <option>Category 2</option>
+              <option>Category 3</option>
+              <option>Category 4</option>
+            </select>
+          </td>
+          <td>
+            <select type="text" class="form-control" style="text-align: center" data-form-items data-name="supplier">
+              <option selected value="">Select Supplier</option>
+              <option>Supplier 1</option>
+              <option>Supplier 2</option>
+              <option>Supplier 3</option>
+              <option>Supplier 4</option>
+            </select>
+          </td>
+          <td>
+            <input type="text" class="form-control" style="text-align: center" data-form-items data-name="qty" data-form-num placeholder="0">
+          </td>
+          <td>
+            <input type="text" class="form-control" style="text-align: center" data-form-items data-name="unit_cost_price" data-form-currency placeholder="₦100.00">
+          </td>
+          <td>
+            <input type="text" class="form-control" style="text-align: center" data-form-items data-name="unit_selling_price" data-form-currency placeholder="₦120.00">
+          </td>
+          <td>
+            <input type="text" class="form-control" style="text-align: center" data-form-items data-name="percentage" data-form-num placeholder="20">
+          </td>
+          <td>
+            <input type="text" class="form-control" style="text-align: center" data-form-items data-name="description" placeholder="description">
+          </td>
+          <td>
+            <button class="btn btn-sm btn-dark remove-item-row" onclick="removeItemRow('${trId}')" data-item-target="${trId}"><i class="fa fa-times"></i></button>
+          </td>
+        </tr>`;
+    }
+
+    $(".add-item-tbody").show(function(){
+      for(var i = 0; i < 3; i++){
+        let trId = makeRand(16);
+        trIDs.push({id: trId});
+        $(".add-item-tbody").append(addItemRow(trId));
+      }      
+      $("body").append('<script src="assets/js/script.js"></script>');
+    })
+
+    $(".addItemRow").click(function(){
+      let trId = makeRand(16);
+      trIDs.push({id: trId});
+      $(".add-item-tbody").append(addItemRow(trId));
+      console.log($(".add-item-tbody").height());
+      $(".add-t-row").scrollTop($(".add-item-tbody").height());      
+      $("body").append('<script src="assets/js/script.js"></script>');
+    })
+
+    $("#completeAddProducts").click(function(){
+      let error = false;
+      $(this).html(`<i class="fa fa-spinner fa-spin"></i>`);
+      let trs = [];
+      let trsToRemove = [];
+      $("[data-item-id]").each(function(){
+        let tr = {id: $(this).data("item-id")};
+        let hasContent = false;
+        $(this).find("td").each(function(){
+          let dataName = $(this).find("[data-name]").data("name");
+          let dataVal = $(this).find("[data-name]").val();
+          if(dataName !== undefined){
+            if(dataVal === "" && dataName !== "description" && dataName !== "specific_name" && dataName !== "supplier" && dataName !== "category"){
+              error = true;
+              $(this).find("[data-name]").addClass("border-red");
+            }
+
+            if(dataVal !== "")
+              hasContent = true;
+
+            tr[dataName] = dataVal;
+            
+          }
+        })
+        if(hasContent)
+          trs.push(tr);
+        else
+          trsToRemove.push($(this).data('item-id'));
+      })
+      console.log(trs);
+      console.log(trsToRemove);
+      if(trs.length > 0){
+        $.each(trsToRemove, (i, item) => {
+          console.log(item);
+          $("[data-item-id='"+item+"']").remove();
+        })
+      }
+
+      if(error){
+        $(this).html("Save Items");
+        return;
+      }
+      else{
+        $.get("process/commodities.php?add_multi_product="+uinfo.id+"&data="+JSON.stringify(trs), function(data){
+          data = JSON.parse(data);
+          if(data.status === "success"){
+            localStorage.prompt = JSON.stringify({title: "Done!", message: data.message, type: "success"});
+            location.reload();
+          }
+          else{
+            swal.fire("Oops!", data.message, "warning");
+            $(this).html("Save Items");
+          }
+        })
+      }
+    })
+
+    $("[data-name]").focus(function(){
+      $(this).removeClass("border-red");
+    })
+
     $("#add-product-form").submit(function(e){
       e.preventDefault();
       let result = validateForm($(this), "form")
@@ -277,6 +404,8 @@
       }
 
       else{
+        console.log(result.data);
+        return false;
         result.data = "?add_product="+uinfo.id+result.data;
         let btn = $(this).find("[type=submit]");
         btn.html("<i class='fa fa-spinner fa-spin'></fa>").prop("disabled", true);
@@ -334,7 +463,35 @@
 
     })
 
+    $("#update-stock-form").submit(function(e){
+      e.preventDefault();
+      let stockid = $(".update-stock").data("id");
+      let result = validateForm($(this), "form");
+      if(result.status == "failed"){
+        return false;
+      }
+
+      else{
+        result.data = "?update_stock="+stockid+"&user="+uinfo.id+result.data;
+        let btn = $(this).find("[type=submit]");
+        btn.html("<i class='fa fa-spinner fa-spin'></fa>").prop("disabled", true);
+        $.get("process/commodities.php"+result.data, function(data){
+          data = JSON.parse(data);
+          btn.html("Add Suppliers").prop("disabled", false);
+          if(data.status === "success"){
+            localStorage.prompt = JSON.stringify({title: "Done!", message: data.message, type: "success"});
+            location.reload();
+          }
+          else{
+            swal.fire("Oops!", data.message, "warning");
+          }  
+        })
+      }
+
+    })
+
     // << Adding of commodities ends here
+
 
     // Commodities processing ends here -------->
 
@@ -506,8 +663,8 @@
       add_sale: true,
       customer: cart.customer.id,
       items: JSON.stringify(items),
-      amount: amount,
-      profit: profit
+      amount: amount.split("₦")[1],
+      profit: profit.split("₦")[1]
     }, (data)=>{
       data = JSON.parse(data);
       if(data.status ==="success"){
@@ -568,6 +725,12 @@ $("[data-action='viewPurchase']").click(function(){
       }
   })
 })
+
+// AMOUNT NOT SHOWING ON PASTOR AY'S PHONE FIX
+
+// $(".history-amount").each(function(){
+//   let amount = $(this).data("amount");
+// })
 
 $("[data-array]").each(function(){
   let array = $(this).text();

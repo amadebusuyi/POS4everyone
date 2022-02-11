@@ -1,3 +1,4 @@
+var trIDs = [];
 
 var makeRand = (length, type = false) => {
     var result = '';

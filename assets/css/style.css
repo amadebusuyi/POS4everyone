@@ -84,7 +84,17 @@
 .cart-t-row{
 	scrollbar-width: thin !important;
 	overflow: auto; 
-	max-height: 59vh
+	max-height: 59vh;
+}
+
+.add-t-row{
+	scrollbar-width: thin !important;
+	overflow: auto !important; 
+	max-height: 62vh;
+}
+
+.border-red{
+	border: 1px solid red !important;
 }
 
 @media(min-width: 575px){

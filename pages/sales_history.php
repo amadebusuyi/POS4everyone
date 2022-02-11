@@ -91,7 +91,7 @@
                     <input type="checkbox" id="select-{{@index}}-{{id}}">
                   </td> -->
                   <td class="name"><?php echo $sales[$i]['customer_name'] ?></td>
-                  <td class="amount"><?php echo $sales[$i]['amount'] ?></td>
+                  <td class="amount">₦<?php echo $sales[$i]['amount'] ?></td>
                   <td class="sold-by"><?php echo $sales[$i]['username'] ?></td>
                   <td class="date"><?php echo $sales[$i]['updated_at'] ?></td>
                   <td>

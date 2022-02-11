@@ -1,3 +1,54 @@
+/* SOME SCRIPTS FOR WEB OPERATION SLOT IN HERE*/
+
+   var updateStockRow = (id) => {
+    let trId = makeRand(16);
+      return `
+        <tr data-item-id="${trId}" data-id="${id}">
+          <td>
+            <input type="text" class="form-control" style="text-align: center" data-form-items data-name="generic_name" placeholder="Item name (generic)">
+          </td>
+          <td>
+            <input type="text" class="form-control" style="text-align: center" data-form-items data-name="specific_name" placeholder="Item name (specific)">
+          </td>
+          <td>
+            <select type="text" class="form-control" style="text-align: center" data-form-items data-name="supplier">
+              <option selected value="">Select Supplier</option>
+              <option>Supplier 1</option>
+              <option>Supplier 2</option>
+              <option>Supplier 3</option>
+              <option>Supplier 4</option>
+            </select>
+          </td>
+          <td>
+            <input type="text" class="form-control" style="text-align: center" data-form-items data-name="qty-plus" data-form-num placeholder="0">
+          </td>
+          <td>
+            <input type="text" class="form-control" style="text-align: center" data-form-items data-name="qty-minus" data-form-num placeholder="0">
+          </td>
+          <td>
+            <input type="text" class="form-control" style="text-align: center" data-form-items data-name="description" placeholder="description">
+          </td>
+          <td>
+            <button class="btn btn-sm btn-dark remove-item-row" onclick="removeItemRow('${trId}')" data-item-target="${trId}"><i class="fa fa-times"></i></button>
+          </td>
+        </tr>`;
+    }
+// SCRIPT TO UPDATE MULTIPLE STOCKS
+    var updateStock = (ids) => {
+      console.log(ids);
+      ids = ids.split(",");
+      var html = "";
+      for(var i = 0; i < ids.length; i++){
+        html += updateStockRow(ids[i]);
+      }
+      
+      $("body").append('<script src="assets/js/script.js"></script>');
+      $(".update-stock-tbody").html(html);
+      $("#updateStockItems").show();
+    }
+
+/* DOM SCRIPT ENDS HERE */
+
 
     var formHandler = (elem, type) => {
         let parent = $(elem).parent("[data-form]");
@@ -76,13 +127,16 @@
     })
 
     var validateForm = (tag, type) => {
-        let status = 1;
-        let result = {};
+        var status = 1;
+        var result = {};
         if(type == "form"){
             result = ""
         }
 
         var load = (elem) => {
+
+            global $type;
+            global $result;
 
             let id = elem.prop("id");
             let val = elem.val();
@@ -140,7 +194,7 @@
     function numOnly(e){
         let ins = e.key;
         let state = false;
-        let numray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, ".", ","];
+        let numray = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0, "."];
         for(var i = 0; i < numray.length; i++){
             if(ins == String(numray[i])){
                 state = true;
@@ -188,3 +242,4 @@
     $("[data-form-currency]").change(function(){
         $(this).val(formatMoney($(this).val()));
     })
+
